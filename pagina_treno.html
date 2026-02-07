@@ -13,8 +13,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: Arial, sans-serif;
         overflow: hidden;
+        padding-top: 60px;
     }
 
     .box {
@@ -29,7 +30,13 @@
 
     h1 { font-size: 28px; margin-bottom: 30px; }
 
-    .buttons { position: relative; height: 150px; }
+    .buttons {
+        position: relative;
+        height: 150px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
 
     button {
         font-size: 20px;
@@ -37,12 +44,12 @@
         border-radius: 12px;
         border: none;
         cursor: pointer;
-        position: absolute;
         transition: top 0.2s, left 0.2s;
     }
 
-    #yesBtn { background: #ff4d6d; color: white; left: 30%; }
-    #noBtn  { background: #6c757d; color: white; left: 60%; }
+    #yesBtn { background: #ff4d6d; color: white; }
+    #noBtn  { background: #6c757d; color: white; }
+    #idkBtn { background: #ffc107; color: black; }
 
     .successText {
         font-size: 36px;
@@ -62,7 +69,6 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* CUORI */
     .heart {
         position: fixed;
         font-size: 24px;
@@ -74,32 +80,28 @@
         0%   { transform: translateY(0) scale(1); opacity: 1; }
         100% { transform: translateY(-200px) scale(1.8); opacity: 0; }
     }
+
     .topnav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: #222;
-    padding: 12px 0;
-    text-align: center;
-    z-index: 10;
-}
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: #222;
+        padding: 12px 0;
+        text-align: center;
+        z-index: 10;
+    }
 
-.topnav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 20px;
-    font-size: 18px;
-    font-weight: bold;
-}
+    .topnav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 20px;
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-.topnav a:hover {
-    color: #ff4d6d;
-}
-
-body {
-    padding-top: 60px; /* per non coprire il contenuto */
-}
-
+    .topnav a:hover {
+        color: #ff4d6d;
+    }
 </style>
 </head>
 
@@ -110,12 +112,12 @@ body {
     <a href="pagina_treno.html">Pagina Treno 🚆</a>
 </nav>
     
-
 <div class="box">
-    <h1>Vuoi essere la mia San Valentina? ❤️</h1>
+    <h1>Vuoi che io venga a Padova?</h1>
     <div class="buttons">
-        <button id="yesBtn">Sì 💖</button>
+        <button id="yesBtn">Sì 🚄</button>
         <button id="noBtn">No 😢</button>
+        <button id="idkBtn">Non lo so 🤷🏼</button>
     </div>
     <div id="result"></div>
 </div>
@@ -123,45 +125,32 @@ body {
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
+const idkBtn = document.getElementById("idkBtn");
 const result = document.getElementById("result");
-const box = document.querySelector(".box"); // contenitore bianco
+const box = document.querySelector(".box");
 
-function moveNoButton() {
+// FUNZIONE GENERICA PER FAR SCAPPARE IL NO
+function moveNoButton(btn) {
     const boxRect = box.getBoundingClientRect();
-
-    const maxX = boxRect.width - noBtn.offsetWidth - 20;
-    const maxY = boxRect.height - noBtn.offsetHeight - 20;
-
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
-
-    noBtn.style.left = randomX + "px";
-    noBtn.style.top = randomY + "px";
+    const maxX = boxRect.width - btn.offsetWidth - 20;
+    const maxY = boxRect.height - btn.offsetHeight - 20;
+    btn.style.position = "absolute";
+    btn.style.left = Math.random() * maxX + "px";
+    btn.style.top = Math.random() * maxY + "px";
 }
 
-document.addEventListener("mousemove", (e) => {
-    const rect = noBtn.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+// NO principale
+noBtn.addEventListener("mousemove", () => moveNoButton(noBtn));
 
-    const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-
-    if (distance < 120) moveNoButton();
-});
-
-
-// ESPLOSIONE CUORI
+// Cuori animati
 function createHearts() {
     for (let i = 0; i < 30; i++) {
         const heart = document.createElement("div");
         heart.classList.add("heart");
-        heart.innerHTML = "💖";
-
+        heart.innerHTML = "🚂❤️";
         heart.style.left = Math.random() * window.innerWidth + "px";
         heart.style.top = Math.random() * window.innerHeight + "px";
-
         document.body.appendChild(heart);
-
         setTimeout(() => heart.remove(), 2000);
     }
 }
@@ -170,11 +159,39 @@ function createHearts() {
 yesBtn.addEventListener("click", () => {
     result.innerHTML = `
         <div class="successText">LO SAPEVO! 💘😂</div>
-        <img src="https://gallery.yopriceville.com/var/resizes/Animated-Gif-Images/Heart_GIF_Animation.gif?m=1629741134" class="gif" alt="Gif cuori animati">
+        <img src="https://clipart-library.com/images/AibjL9y8T.gif" class="gif" alt="Trenino felice">
     `;
     createHearts();
 });
 
+// CLICK "Non lo so"
+idkBtn.addEventListener("click", () => {
+    result.innerHTML = `
+        <div class="successText">Daiii lo so che vuoi 😏</div>
+        <div class="buttons" id="secondButtons" style="position:relative; height:150px; margin-top:20px;">
+            <button id="yes2">Sì 💖</button>
+            <button id="no2">No 😢</button>
+        </div>
+    `;
+
+    const yes2 = document.getElementById("yes2");
+    const no2  = document.getElementById("no2");
+
+    // Impostiamo NO2 come absolute per farlo scappare
+    no2.style.position = "absolute";
+    no2.style.top = "50px";
+    no2.style.left = "60%";
+
+    no2.addEventListener("mousemove", () => moveNoButton(no2));
+
+    yes2.addEventListener("click", () => {
+        result.innerHTML = `
+            <div class="successText">LO SAPEVO! 💘😂</div>
+            <img src="https://clipart-library.com/images/AibjL9y8T.gif" class="gif" alt="Trenino felice">
+        `;
+        createHearts();
+    });
+});
 </script>
 </body>
 </html>
