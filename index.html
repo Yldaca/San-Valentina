@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Domanda importantissima </title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, Helvetica, sans-serif;
+        overflow: hidden;
+    }
+
+    .box {
+        text-align: center;
+        background: white;
+        padding: 40px 60px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 2;
+    }
+
+    h1 { font-size: 28px; margin-bottom: 30px; }
+
+    .buttons { position: relative; height: 150px; }
+
+    button {
+        font-size: 20px;
+        padding: 12px 28px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        position: absolute;
+        transition: top 0.2s, left 0.2s;
+    }
+
+    #yesBtn { background: #ff4d6d; color: white; left: 30%; }
+    #noBtn  { background: #6c757d; color: white; left: 60%; }
+
+    .successText {
+        font-size: 36px;
+        color: #ff4d6d;
+        animation: pop 0.5s ease;
+        margin-bottom: 15px;
+    }
+
+    .gif {
+        width: 220px;
+        border-radius: 15px;
+        animation: pop 0.6s ease;
+    }
+
+    @keyframes pop {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* CUORI */
+    .heart {
+        position: fixed;
+        font-size: 24px;
+        animation: floatUp 2s linear forwards;
+        z-index: 1;
+    }
+
+    @keyframes floatUp {
+        0%   { transform: translateY(0) scale(1); opacity: 1; }
+        100% { transform: translateY(-200px) scale(1.8); opacity: 0; }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h1>Vuoi essere la mia San Valentina? ❤️</h1>
+    <div class="buttons">
+        <button id="yesBtn">Sì 💖</button>
+        <button id="noBtn">No 😢</button>
+    </div>
+    <div id="result"></div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const result = document.getElementById("result");
+const box = document.querySelector(".box"); // contenitore bianco
+
+function moveNoButton() {
+    const boxRect = box.getBoundingClientRect();
+
+    const maxX = boxRect.width - noBtn.offsetWidth - 20;
+    const maxY = boxRect.height - noBtn.offsetHeight - 20;
+
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
+
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
+}
+
+document.addEventListener("mousemove", (e) => {
+    const rect = noBtn.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+
+    if (distance < 120) moveNoButton();
+});
+
+
+// ESPLOSIONE CUORI
+function createHearts() {
+    for (let i = 0; i < 30; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "💖";
+
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.top = Math.random() * window.innerHeight + "px";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 2000);
+    }
+}
+
+// CLICK SÌ
+yesBtn.addEventListener("click", () => {
+    result.innerHTML = `
+        <div class="successText">LO SAPEVO! 💘😂</div>
+        <img class="gif" src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif">
+    `;
+    createHearts();
+});
+</script>
+
+</body>
+</html>
